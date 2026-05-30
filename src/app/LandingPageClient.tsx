@@ -302,7 +302,7 @@ export default function LandingPageClient({
       <header className={`header ${isScrolled ? 'scrolled' : ''}`} id="header">
         <div className="container nav-container">
           <a href="#" className="logo" onClick={(e) => handleNavClick(e, 'home')}>
-            BITFAST<span className="logo-dot">.</span>
+            <img src="/Logo2.png" alt="BITFAST" width="150" />
           </a>
 
           <ul className={`nav-menu ${isMenuOpen ? 'open' : ''}`} id="nav-menu">
@@ -380,8 +380,8 @@ export default function LandingPageClient({
         <div className="container hero-grid">
           <div className="hero-content">
             <h1>
-              Koneksi Internet <br />
-              <span className="gradient-text">Super Cepat & Tanpa Batas</span>
+              Internet Cepat<br />
+              <span className="gradient-text">Ora Ngadat</span>
             </h1>
             <p>
               Nikmati kebebasan berinternet dengan jaringan 100% Fiber Optik murni dari Bitfast. Tanpa batasan kuota (FUP), latensi ultra rendah, dan kecepatan simetris untuk kebutuhan rumah serta bisnis Anda.
@@ -429,13 +429,13 @@ export default function LandingPageClient({
 
           <div className="packages-toggle">
             <button
-              className={`toggle-tab ${packageCategory === 'home' ? 'active' : ''}`}
+              className={`toggle-tab ${packageCategory === 'home' ? 'active_a' : ''}`}
               onClick={() => setPackageCategory('home')}
             >
               Untuk Rumah (Home)
             </button>
             <button
-              className={`toggle-tab ${packageCategory === 'business' ? 'active' : ''}`}
+              className={`toggle-tab ${packageCategory === 'business' ? 'active_a' : ''}`}
               onClick={() => setPackageCategory('business')}
             >
               Untuk Bisnis (Business)
@@ -509,7 +509,7 @@ export default function LandingPageClient({
 
               <div className="coverage-checker">
                 <div className="checker-form">
-                  <label style={{ fontWeight: 600, fontSize: '14px', color: 'var(--text-muted)' }}>CARI WILAYAH ANDA</label>
+                  <label style={{ fontWeight: 600, fontSize: '14px' }}>CARI WILAYAH ANDA</label>
                   <div className="checker-input-wrapper">
                     <input
                       type="text"
@@ -767,7 +767,7 @@ export default function LandingPageClient({
         <div className="container footer-grid">
           <div className="footer-about">
             <a href="#" className="logo" onClick={(e) => handleNavClick(e, 'home')}>
-              BITFAST<span className="logo-dot">.</span>
+              <img src="/logo.jpeg" alt="BITFAST" width="150" />
             </a>
             <p>BitFast menyediakan layanan internet cepat dan terjangkau dengan dukungan teknisi lokal yang siap membantu 24 jam.
               <br />Memberikan koneksi internet berkualitas dengan harga kompetitif.
