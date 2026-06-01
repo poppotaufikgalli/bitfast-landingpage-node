@@ -10,7 +10,8 @@ module.exports = {
             watch: true, // Only use this if you want auto-restarts on code updates
             ignore_watch: ["node_modules", "/public/uploads", "/uploads"], // Prevents upload loops
             env: {
-                NODE_ENV: "production"
+                NODE_ENV: "production",
+                PORT: 3010,
             }
         }
     ]
