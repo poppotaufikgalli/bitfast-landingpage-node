@@ -32,7 +32,7 @@ export async function POST(request: Request) {
         const newFileName = `${cleanBaseName}-${timestamp}${fileDetails.ext}`;
 
         // Define the destination path (e.g., public/uploads folder)
-        const uploadDir = join(__dirname, 'public', 'uploads');
+        const uploadDir = join(process.cwd(), 'public', 'uploads');
         const filePath = join(uploadDir, newFileName);
 
         // Save the file to disk
