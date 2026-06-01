@@ -204,7 +204,7 @@ export default function PostsAdminPage() {
             style={{ maxWidth: '780px', maxHeight: '92vh' }}
             onClick={(e) => e.stopPropagation()}
           >
-            <h3>{editingId ? 'Edit Artikel Blog' : 'Tulis Artikel Baru'}</h3>
+            <h3 style={{ color: 'var(--admin-text-muted)' }}>{editingId ? 'Edit Artikel Blog' : 'Tulis Artikel Baru'}</h3>
 
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
               <div className="admin-input-group">
@@ -294,7 +294,7 @@ export default function PostsAdminPage() {
               />
             </div>
 
-            <label className="admin-checkbox-label" style={{ marginTop: '8px' }}>
+            <label className="admin-checkbox-label" style={{ marginTop: '8px', color: 'var(--admin-text-muted)' }}>
               <input
                 type="checkbox"
                 checked={form.is_published}

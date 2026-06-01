@@ -3,6 +3,7 @@
 import React from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import './admin.css';
+import { request } from 'http';
 
 export default function AdminLayout({
   children,
@@ -11,6 +12,22 @@ export default function AdminLayout({
 }) {
   const router = useRouter();
   const pathname = usePathname();
+  const [isAdmin, setIsAdmin] = React.useState(false);
+
+  React.useEffect(() => {
+    async function checkAdmin() {
+      const res = await fetch('/api/admin/profile', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      const { id } = await res.json();
+      console.log(id);
+      setIsAdmin(id === 1);
+    }
+    checkAdmin();
+  }, []);
 
   // Don't show layout on the login page
   if (pathname === '/admin/login') {
@@ -19,7 +36,7 @@ export default function AdminLayout({
 
   const handleLogout = async () => {
     if (!confirm('Apakah Anda yakin ingin logout dari CMS?')) return;
-    
+
     try {
       const res = await fetch('/api/admin/auth', {
         method: 'POST',
@@ -46,6 +63,22 @@ export default function AdminLayout({
     return pathname.startsWith(path);
   };
 
+  // const isAdmin = async () => {
+  //   try {
+  //     const res = await fetch('/api/admin/profile', {
+  //       method: 'GET',
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //       },
+  //     });
+  //     const data = await res.json();
+  //     return data.id === 1;
+  //   } catch (err) {
+  //     console.error('Admin check error:', err);
+  //     return false;
+  //   }
+  // };
+
   return (
     <div className="admin-body">
       <div className="admin-container">
@@ -54,9 +87,9 @@ export default function AdminLayout({
           <div className="admin-sidebar-logo">
             BITFAST<span>.</span>ADMIN
           </div>
-          
+
           <nav className="admin-nav">
-            <a 
+            <a
               className={`admin-nav-link ${isActive('/admin') && !isActive('/admin/') ? 'active' : ''}`}
               onClick={() => router.push('/admin')}
             >
@@ -65,8 +98,8 @@ export default function AdminLayout({
               </svg>
               Dashboard
             </a>
-            
-            <a 
+
+            <a
               className={`admin-nav-link ${isActive('/admin/registrations') ? 'active' : ''}`}
               onClick={() => router.push('/admin/registrations')}
             >
@@ -75,8 +108,8 @@ export default function AdminLayout({
               </svg>
               Pendaftaran Lead
             </a>
-            
-            <a 
+
+            <a
               className={`admin-nav-link ${isActive('/admin/packages') ? 'active' : ''}`}
               onClick={() => router.push('/admin/packages')}
             >
@@ -85,8 +118,8 @@ export default function AdminLayout({
               </svg>
               Paket Internet
             </a>
-            
-            <a 
+
+            <a
               className={`admin-nav-link ${isActive('/admin/testimonials') ? 'active' : ''}`}
               onClick={() => router.push('/admin/testimonials')}
             >
@@ -95,8 +128,8 @@ export default function AdminLayout({
               </svg>
               Testimoni Klien
             </a>
-            
-            <a 
+
+            <a
               className={`admin-nav-link ${isActive('/admin/posts') ? 'active' : ''}`}
               onClick={() => router.push('/admin/posts')}
             >
@@ -106,7 +139,22 @@ export default function AdminLayout({
               Artikel Blog
             </a>
 
-            <a 
+            {isAdmin && (
+              <a
+                className={`admin-nav-link ${isActive('/admin/users') ? 'active' : ''}`}
+                onClick={() => router.push('/admin/users')}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                  <path d="M3 12a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" />
+                  <path d="M9 10a3 3 0 1 0 6 0a3 3 0 1 0 -6 0" />
+                  <path d="M6.168 18.849a4 4 0 0 1 3.832 -2.849h4a4 4 0 0 1 3.834 2.855" />
+                </svg>
+                User
+              </a>
+            )}
+
+            <a
               className="admin-nav-link"
               onClick={() => window.open('/', '_blank')}
             >
@@ -115,7 +163,7 @@ export default function AdminLayout({
               </svg>
               Lihat Website
             </a>
-            
+
             <a className="admin-nav-link logout-btn" onClick={handleLogout}>
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
@@ -130,11 +178,12 @@ export default function AdminLayout({
           {/* Header info */}
           <div className="admin-header">
             <h1>CMS Bitfast</h1>
-            <div className="admin-user-info">
-              Masuk sebagai: <strong>Admin Bitfast</strong>
+            <div className="admin-user-info" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              Masuk sebagai: <button onClick={() => router.push('/admin/profile')}
+                className="admin-nav-link">Admin Bitfast</button>
             </div>
           </div>
-          
+
           {children}
         </main>
       </div>

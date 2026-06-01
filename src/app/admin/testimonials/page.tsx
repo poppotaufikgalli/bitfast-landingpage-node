@@ -206,7 +206,7 @@ export default function TestimonialsAdminPage() {
       {showModal && (
         <div className="admin-modal-overlay" onClick={() => setShowModal(false)}>
           <div className="admin-modal" onClick={(e) => e.stopPropagation()}>
-            <h3>{editingId ? 'Edit Testimoni' : 'Tambah Testimoni Baru'}</h3>
+            <h3 style={{ color: 'var(--admin-text-muted)' }}>{editingId ? 'Edit Testimoni' : 'Tambah Testimoni Baru'}</h3>
 
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
               <div className="admin-input-group">
@@ -267,7 +267,7 @@ export default function TestimonialsAdminPage() {
             </div>
 
             <div style={{ display: 'flex', gap: '24px' }}>
-              <label className="admin-checkbox-label">
+              <label className="admin-checkbox-label" style={{ color: 'var(--admin-text-muted)' }}>
                 <input
                   type="checkbox"
                   checked={form.is_featured}
@@ -275,7 +275,7 @@ export default function TestimonialsAdminPage() {
                 />
                 Tampilkan di halaman utama (Featured)
               </label>
-              <label className="admin-checkbox-label">
+              <label className="admin-checkbox-label" style={{ color: 'var(--admin-text-muted)' }}>
                 <input
                   type="checkbox"
                   checked={form.is_active}

@@ -232,7 +232,7 @@ export default function PackagesAdminPage() {
       {showModal && (
         <div className="admin-modal-overlay" onClick={() => setShowModal(false)}>
           <div className="admin-modal" style={{ maxWidth: '700px' }} onClick={(e) => e.stopPropagation()}>
-            <h3>{editingId ? 'Edit Paket Internet' : 'Tambah Paket Baru'}</h3>
+            <h3 style={{ color: 'var(--admin-text-muted)' }}>{editingId ? 'Edit Paket Internet' : 'Tambah Paket Baru'}</h3>
 
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
               <div className="admin-input-group">
