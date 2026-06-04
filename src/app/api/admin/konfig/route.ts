@@ -21,7 +21,7 @@ async function verifySession() {
     }
 }
 
-export async function GET(request: Request, context: { params: Promise<{ jns: string }> }) {
+export async function GET(request: Request) {
     const session = await verifySession();
     if (!session) {
         return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -43,7 +43,7 @@ export async function GET(request: Request, context: { params: Promise<{ jns: st
     }
 }
 
-export async function POST(request: Request, context: { params: Promise<{ jns: string }> }) {
+export async function POST(request: Request) {
     const session = await verifySession();
     if (!session) {
         return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -68,7 +68,7 @@ export async function POST(request: Request, context: { params: Promise<{ jns: s
     }
 }
 
-export async function PUT(request: Request, context: { params: Promise<{ jns: string }> }) {
+export async function PUT(request: Request) {
     const session = await verifySession();
     if (!session) {
         return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -104,27 +104,21 @@ export async function DELETE(request: Request) {
     }
 
     try {
-        const { id } = session;
-        const { userId } = await request.json();
-        console.log(userId);
-        if (!userId) {
+
+        const urlParam = new URL(request.url).searchParams;
+        const id = urlParam.get("id");
+
+        if (!id) {
             return NextResponse.json(
-                { success: false, message: 'User tidak ditemukan.' },
+                { success: false, message: 'Data Konfig tidak ditemukan.' },
                 { status: 401 }
             );
         }
 
-        if (id == userId) {
-            return NextResponse.json(
-                { success: false, message: 'User tidak dapat menghapus dirinya sendiri.' },
-                { status: 401 }
-            );
-        }
-
-        await query('DELETE FROM users WHERE id = ?', [userId]) as any[];
+        await query('DELETE FROM konfigs WHERE id = ?', [id]) as any[];
         return NextResponse.json({
             success: true,
-            message: 'User berhasil dihapus.',
+            message: 'Konfig berhasil dihapus.',
         });
     } catch (error) {
         console.error("User deletion error:", error);
