@@ -61,6 +61,12 @@
     scroll-behavior: smooth;
 }
 
+html,
+body {
+    max-width: 100%;
+    overflow-x: hidden;
+}
+
 /* body {
     background-color: var(--bg-main);
     color: var(--text-main);

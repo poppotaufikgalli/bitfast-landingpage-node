@@ -139,6 +139,16 @@ export default function AdminLayout({
               Artikel Blog
             </a>
 
+            <a
+              className={`admin-nav-link ${isActive('/admin/konfig') ? 'active' : ''}`}
+              onClick={() => router.push('/admin/konfig/link')}
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v12a2 2 0 01-2 2zM12 11l3 3m0 0l-3 3m3-3H8" />
+              </svg>
+              Config Aplikasi
+            </a>
+
             {isAdmin && (
               <a
                 className={`admin-nav-link ${isActive('/admin/users') ? 'active' : ''}`}

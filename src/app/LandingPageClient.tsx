@@ -36,16 +36,31 @@ interface Post {
   published_at: string;
 }
 
+interface Konfigs {
+  id: number;
+  jns: string;
+  judul: string;
+  content: string;
+  created_at: string;
+  updated_at: string;
+}
+
 interface LandingPageClientProps {
   initialPackages: Package[];
   initialTestimonials: Testimonial[];
   initialPosts: Post[];
+  initialCoverage: Konfigs[];
+  initialLinks: Konfigs[];
+  initialSosmed: Konfigs[];
 }
 
 export default function LandingPageClient({
   initialPackages,
   initialTestimonials,
   initialPosts,
+  initialCoverage,
+  initialLinks,
+  initialSosmed,
 }: LandingPageClientProps) {
   // --- STATES ---
   const [isScrolled, setIsScrolled] = useState(false);
@@ -191,18 +206,19 @@ export default function LandingPageClient({
       return;
     }
 
-    const coveredAreas = [
-      'jakarta', 'jakarta selatan', 'jakarta timur', 'jakarta barat', 'jakarta utara', 'jakarta pusat',
-      'tangerang', 'tangerang selatan', 'bsd', 'ciputat', 'pamulang', 'karawaci', 'ciledug',
-      'bekasi', 'bekasi timur', 'bekasi barat', 'cikarang', 'tambun',
-      'depok', 'margonda', 'cinere', 'sawangan', 'cibinong',
-      'bogor', 'sentul', 'bogor timur', 'bogor utara',
-      'bandung', 'dago', 'buah batu', 'lembang', 'cimahi',
-      'surabaya', 'rungkut', 'dharmahusada', 'wonokromo',
-      'semarang', 'simpang lima', 'tembalang'
-    ];
+    // const coveredAreas = [
+    //   'jakarta', 'jakarta selatan', 'jakarta timur', 'jakarta barat', 'jakarta utara', 'jakarta pusat',
+    //   'tangerang', 'tangerang selatan', 'bsd', 'ciputat', 'pamulang', 'karawaci', 'ciledug',
+    //   'bekasi', 'bekasi timur', 'bekasi barat', 'cikarang', 'tambun',
+    //   'depok', 'margonda', 'cinere', 'sawangan', 'cibinong',
+    //   'bogor', 'sentul', 'bogor timur', 'bogor utara',
+    //   'bandung', 'dago', 'buah batu', 'lembang', 'cimahi',
+    //   'surabaya', 'rungkut', 'dharmahusada', 'wonokromo',
+    //   'semarang', 'simpang lima', 'tembalang'
+    // ];
 
-    const isCovered = coveredAreas.some(area => area.includes(query) || query.includes(area));
+    // const isCovered = coveredAreas.some(area => area.includes(query) || query.includes(area));
+    const isCovered = initialCoverage.filter(c => c.judul.toLowerCase() == query).length > 0;
 
     if (isCovered) {
       setCoverageResult({
@@ -496,14 +512,9 @@ export default function LandingPageClient({
                 <p>Jaringan serat optik Bitfast terus berekspansi dengan cepat ke berbagai kota dan kecamatan. Masukkan wilayah tinggal Anda untuk memeriksa apakah layanan kami sudah dapat dipasang.</p>
 
                 <div className="coverage-list">
-                  <div className="coverage-city"><span></span>Jakarta</div>
-                  <div className="coverage-city"><span></span>Tangerang</div>
-                  <div className="coverage-city"><span></span>Bekasi</div>
-                  <div className="coverage-city"><span></span>Depok</div>
-                  <div className="coverage-city"><span></span>Bogor</div>
-                  <div className="coverage-city"><span></span>Bandung</div>
-                  <div className="coverage-city"><span></span>Surabaya</div>
-                  <div className="coverage-city"><span></span>Semarang</div>
+                  {initialCoverage.filter(c => c.jns === 'coverage_area').map((coverage, idx) => (
+                    <div key={coverage.id} className="coverage-city"><span></span>{coverage.judul}</div>
+                  ))}
                 </div>
               </div>
 
@@ -793,29 +804,48 @@ export default function LandingPageClient({
               <li>Kantor Pusat: <br />Jalan Ring Road - Jalan Raya Bubulak Nomor A-4, Desa/Kelurahan Bubulak, Kec. Bogor Barat, Kota Bogor, Provinsi Jawa Barat, Kode Pos: 16115.</li>
             </ul>
           </div>
+          <div className="footer-links">
+            <h4>Link Terkait</h4>
+            <ul style={{ color: 'var(--text-muted)', fontSize: '14px', gap: '8px' }}>
+              {initialLinks.map((link, idx) => (
+                <li key={idx}>
+                  <a href={link.content} target="_blank" rel="noopener noreferrer">{link.judul}</a>
+                </li>
+              ))}
+            </ul>
+          </div>
           <div className="footer-social">
             <h4>Media Sosial</h4>
+
             <div className="social-links">
-              <a href="https://www.instagram.com/bitfastone" aria-label="Instagram">
-                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" stroke="currentColor">
-                  <path d="M10.202,2.098c-1.49,.07-2.507,.308-3.396,.657-.92,.359-1.7,.84-2.477,1.619-.776,.779-1.254,1.56-1.61,2.481-.345,.891-.578,1.909-.644,3.4-.066,1.49-.08,1.97-.073,5.771s.024,4.278,.096,5.772c.071,1.489,.308,2.506,.657,3.396,.359,.92,.84,1.7,1.619,2.477,.779,.776,1.559,1.253,2.483,1.61,.89,.344,1.909,.579,3.399,.644,1.49,.065,1.97,.08,5.771,.073,3.801-.007,4.279-.024,5.773-.095s2.505-.309,3.395-.657c.92-.36,1.701-.84,2.477-1.62s1.254-1.561,1.609-2.483c.345-.89,.579-1.909,.644-3.398,.065-1.494,.081-1.971,.073-5.773s-.024-4.278-.095-5.771-.308-2.507-.657-3.397c-.36-.92-.84-1.7-1.619-2.477s-1.561-1.254-2.483-1.609c-.891-.345-1.909-.58-3.399-.644s-1.97-.081-5.772-.074-4.278,.024-5.771,.096m.164,25.309c-1.365-.059-2.106-.286-2.6-.476-.654-.252-1.12-.557-1.612-1.044s-.795-.955-1.05-1.608c-.192-.494-.423-1.234-.487-2.599-.069-1.475-.084-1.918-.092-5.656s.006-4.18,.071-5.656c.058-1.364,.286-2.106,.476-2.6,.252-.655,.556-1.12,1.044-1.612s.955-.795,1.608-1.05c.493-.193,1.234-.422,2.598-.487,1.476-.07,1.919-.084,5.656-.092,3.737-.008,4.181,.006,5.658,.071,1.364,.059,2.106,.285,2.599,.476,.654,.252,1.12,.555,1.612,1.044s.795,.954,1.051,1.609c.193,.492,.422,1.232,.486,2.597,.07,1.476,.086,1.919,.093,5.656,.007,3.737-.006,4.181-.071,5.656-.06,1.365-.286,2.106-.476,2.601-.252,.654-.556,1.12-1.045,1.612s-.955,.795-1.608,1.05c-.493,.192-1.234,.422-2.597,.487-1.476,.069-1.919,.084-5.657,.092s-4.18-.007-5.656-.071M21.779,8.517c.002,.928,.755,1.679,1.683,1.677s1.679-.755,1.677-1.683c-.002-.928-.755-1.679-1.683-1.677,0,0,0,0,0,0-.928,.002-1.678,.755-1.677,1.683m-12.967,7.496c.008,3.97,3.232,7.182,7.202,7.174s7.183-3.232,7.176-7.202c-.008-3.97-3.233-7.183-7.203-7.175s-7.182,3.233-7.174,7.203m2.522-.005c-.005-2.577,2.08-4.671,4.658-4.676,2.577-.005,4.671,2.08,4.676,4.658,.005,2.577-2.08,4.671-4.658,4.676-2.577,.005-4.671-2.079-4.676-4.656h0"></path>
-                </svg>
-              </a>
-              <a href="https://facebook.com/@bitfastoneseven" aria-label="Facebook">
-                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" stroke="currentColor">
-                  <path d="M16,2c-7.732,0-14,6.268-14,14,0,6.566,4.52,12.075,10.618,13.588v-9.31h-2.887v-4.278h2.887v-1.843c0-4.765,2.156-6.974,6.835-6.974,.887,0,2.417,.174,3.043,.348v3.878c-.33-.035-.904-.052-1.617-.052-2.296,0-3.183,.87-3.183,3.13v1.513h4.573l-.786,4.278h-3.787v9.619c6.932-.837,12.304-6.74,12.304-13.897,0-7.732-6.268-14-14-14Z"></path>
-                </svg>
-              </a>
-              <a href="https://twitter.com/@bitfastoneseven" aria-label="X">
-                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" stroke="currentColor">
-                  <path d="M18.42,14.009L27.891,3h-2.244l-8.224,9.559L10.855,3H3.28l9.932,14.455L3.28,29h2.244l8.684-10.095,6.936,10.095h7.576l-10.301-14.991h0Zm-3.074,3.573l-1.006-1.439L6.333,4.69h3.447l6.462,9.243,1.006,1.439,8.4,12.015h-3.447l-6.854-9.804h0Z"></path>
-                </svg>
-              </a>
-              <a href="https://www.tiktok.com/@bitfastone" aria-label="Tiktok">
-                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" stroke="currentColor">
-                  <path d="M24.562,7.613c-1.508-.983-2.597-2.557-2.936-4.391-.073-.396-.114-.804-.114-1.221h-4.814l-.008,19.292c-.081,2.16-1.859,3.894-4.039,3.894-.677,0-1.315-.169-1.877-.465-1.288-.678-2.169-2.028-2.169-3.582,0-2.231,1.815-4.047,4.046-4.047,.417,0,.816,.069,1.194,.187v-4.914c-.391-.053-.788-.087-1.194-.087-4.886,0-8.86,3.975-8.86,8.86,0,2.998,1.498,5.65,3.783,7.254,1.439,1.01,3.19,1.606,5.078,1.606,4.886,0,8.86-3.975,8.86-8.86V11.357c1.888,1.355,4.201,2.154,6.697,2.154v-4.814c-1.345,0-2.597-.4-3.647-1.085Z"></path>
-                </svg>
-              </a>
+              {initialSosmed.map((sosmed, idx) => (
+                <a key={idx} href={sosmed.content} aria-label={sosmed.judul}>
+                  {sosmed.judul == 'instagram' && (
+                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" stroke="currentColor">
+                      <path d="M10.202,2.098c-1.49,.07-2.507,.308-3.396,.657-.92,.359-1.7,.84-2.477,1.619-.776,.779-1.254,1.56-1.61,2.481-.345,.891-.578,1.909-.644,3.4-.066,1.49-.08,1.97-.073,5.771s.024,4.278,.096,5.772c.071,1.489,.308,2.506,.657,3.396,.359,.92,.84,1.7,1.619,2.477,.779,.776,1.559,1.253,2.483,1.61,.89,.344,1.909,.579,3.399,.644,1.49,.065,1.97,.08,5.771,.073,3.801-.007,4.279-.024,5.773-.095s2.505-.309,3.395-.657c.92-.36,1.701-.84,2.477-1.62s1.254-1.561,1.609-2.483c.345-.89,.579-1.909,.644-3.398,.065-1.494,.081-1.971,.073-5.773s-.024-4.278-.095-5.771-.308-2.507-.657-3.397c-.36-.92-.84-1.7-1.619-2.477s-1.561-1.254-2.483-1.609c-.891-.345-1.909-.58-3.399-.644s-1.97-.081-5.772-.074-4.278,.024-5.771,.096m.164,25.309c-1.365-.059-2.106-.286-2.6-.476-.654-.252-1.12-.557-1.612-1.044s-.795-.955-1.05-1.608c-.192-.494-.423-1.234-.487-2.599-.069-1.475-.084-1.918-.092-5.656s.006-4.18,.071-5.656c.058-1.364,.286-2.106,.476-2.6,.252-.655,.556-1.12,1.044-1.612s.955-.795,1.608-1.05c.493-.193,1.234-.422,2.598-.487,1.476-.07,1.919-.084,5.656-.092,3.737-.008,4.181,.006,5.658,.071,1.364,.059,2.106,.285,2.599,.476,.654,.252,1.12,.555,1.612,1.044s.795,.954,1.051,1.609c.193,.492,.422,1.232,.486,2.597,.07,1.476,.086,1.919,.093,5.656,.007,3.737-.006,4.181-.071,5.656-.06,1.365-.286,2.106-.476,2.601-.252,.654-.556,1.12-1.045,1.612s-.955,.795-1.608,1.05c-.493,.192-1.234,.422-2.597,.487-1.476,.069-1.919,.084-5.657,.092s-4.18-.007-5.656-.071M21.779,8.517c.002,.928,.755,1.679,1.683,1.677s1.679-.755,1.677-1.683c-.002-.928-.755-1.679-1.683-1.677,0,0,0,0,0,0-.928,.002-1.678,.755-1.677,1.683m-12.967,7.496c.008,3.97,3.232,7.182,7.202,7.174s7.183-3.232,7.176-7.202c-.008-3.97-3.233-7.183-7.203-7.175s-7.182,3.233-7.174,7.203m2.522-.005c-.005-2.577,2.08-4.671,4.658-4.676,2.577-.005,4.671,2.08,4.676,4.658,.005,2.577-2.08,4.671-4.658,4.676-2.577,.005-4.671-2.079-4.676-4.656h0"></path>
+                    </svg>
+                  )}
+
+                  {sosmed.judul == 'facebook' && (
+                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" stroke="currentColor">
+                      <path d="M16,2c-7.732,0-14,6.268-14,14,0,6.566,4.52,12.075,10.618,13.588v-9.31h-2.887v-4.278h2.887v-1.843c0-4.765,2.156-6.974,6.835-6.974,.887,0,2.417,.174,3.043,.348v3.878c-.33-.035-.904-.052-1.617-.052-2.296,0-3.183,.87-3.183,3.13v1.513h4.573l-.786,4.278h-3.787v9.619c6.932-.837,12.304-6.74,12.304-13.897,0-7.732-6.268-14-14-14Z"></path>
+                    </svg>
+                  )}
+
+                  {sosmed.judul == 'tiktok' && (
+                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" stroke="currentColor">
+                      <path d="M24.562,7.613c-1.508-.983-2.597-2.557-2.936-4.391-.073-.396-.114-.804-.114-1.221h-4.814l-.008,19.292c-.081,2.16-1.859,3.894-4.039,3.894-.677,0-1.315-.169-1.877-.465-1.288-.678-2.169-2.028-2.169-3.582,0-2.231,1.815-4.047,4.046-4.047,.417,0,.816,.069,1.194,.187v-4.914c-.391-.053-.788-.087-1.194-.087-4.886,0-8.86,3.975-8.86,8.86,0,2.998,1.498,5.65,3.783,7.254,1.439,1.01,3.19,1.606,5.078,1.606,4.886,0,8.86-3.975,8.86-8.86V11.357c1.888,1.355,4.201,2.154,6.697,2.154v-4.814c-1.345,0-2.597-.4-3.647-1.085Z"></path>
+                    </svg>
+                  )}
+
+                  {sosmed.judul == 'twitter' && (
+                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" stroke="currentColor">
+                      <path d="M18.42,14.009L27.891,3h-2.244l-8.224,9.559L10.855,3H3.28l9.932,14.455L3.28,29h2.244l8.684-10.095,6.936,10.095h7.576l-10.301-14.991h0Zm-3.074,3.573l-1.006-1.439L6.333,4.69h3.447l6.462,9.243,1.006,1.439,8.4,12.015h-3.447l-6.854-9.804h0Z"></path>
+                    </svg>
+                  )}
+
+                </a>
+              ))}
             </div>
           </div>
         </div>
@@ -851,6 +881,19 @@ export default function LandingPageClient({
           </div>
         </div>
       )}
+      <a
+        href="https://wa.me/6282298880909"
+        target="_blank"
+        className="whatsapp-float"
+        aria-label="Chat via WhatsApp"
+      >
+        {/* Icon WhatsApp */}
+
+        {/* Tooltip teks yang muncul saat di-hover (Opsional) */}
+        <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="100" height="100" viewBox="0 0 48 48">
+          <path fill="#fff" d="M4.9,43.3l2.7-9.8C5.9,30.6,5,27.3,5,24C5,13.5,13.5,5,24,5c5.1,0,9.8,2,13.4,5.6	C41,14.2,43,18.9,43,24c0,10.5-8.5,19-19,19c0,0,0,0,0,0h0c-3.2,0-6.3-0.8-9.1-2.3L4.9,43.3z"></path><path fill="#fff" d="M4.9,43.8c-0.1,0-0.3-0.1-0.4-0.1c-0.1-0.1-0.2-0.3-0.1-0.5L7,33.5c-1.6-2.9-2.5-6.2-2.5-9.6	C4.5,13.2,13.3,4.5,24,4.5c5.2,0,10.1,2,13.8,5.7c3.7,3.7,5.7,8.6,5.7,13.8c0,10.7-8.7,19.5-19.5,19.5c-3.2,0-6.3-0.8-9.1-2.3	L5,43.8C5,43.8,4.9,43.8,4.9,43.8z"></path><path fill="#cfd8dc" d="M24,5c5.1,0,9.8,2,13.4,5.6C41,14.2,43,18.9,43,24c0,10.5-8.5,19-19,19h0c-3.2,0-6.3-0.8-9.1-2.3	L4.9,43.3l2.7-9.8C5.9,30.6,5,27.3,5,24C5,13.5,13.5,5,24,5 M24,43L24,43L24,43 M24,43L24,43L24,43 M24,4L24,4C13,4,4,13,4,24	c0,3.4,0.8,6.7,2.5,9.6L3.9,43c-0.1,0.3,0,0.7,0.3,1c0.2,0.2,0.4,0.3,0.7,0.3c0.1,0,0.2,0,0.3,0l9.7-2.5c2.8,1.5,6,2.2,9.2,2.2	c11,0,20-9,20-20c0-5.3-2.1-10.4-5.8-14.1C34.4,6.1,29.4,4,24,4L24,4z"></path><path fill="#40c351" d="M35.2,12.8c-3-3-6.9-4.6-11.2-4.6C15.3,8.2,8.2,15.3,8.2,24c0,3,0.8,5.9,2.4,8.4L11,33l-1.6,5.8	l6-1.6l0.6,0.3c2.4,1.4,5.2,2.2,8,2.2h0c8.7,0,15.8-7.1,15.8-15.8C39.8,19.8,38.2,15.8,35.2,12.8z"></path><path fill="#fff" fillRule="evenodd" d="M19.3,16c-0.4-0.8-0.7-0.8-1.1-0.8c-0.3,0-0.6,0-0.9,0	s-0.8,0.1-1.3,0.6c-0.4,0.5-1.7,1.6-1.7,4s1.7,4.6,1.9,4.9s3.3,5.3,8.1,7.2c4,1.6,4.8,1.3,5.7,1.2c0.9-0.1,2.8-1.1,3.2-2.3	c0.4-1.1,0.4-2.1,0.3-2.3c-0.1-0.2-0.4-0.3-0.9-0.6s-2.8-1.4-3.2-1.5c-0.4-0.2-0.8-0.2-1.1,0.2c-0.3,0.5-1.2,1.5-1.5,1.9	c-0.3,0.3-0.6,0.4-1,0.1c-0.5-0.2-2-0.7-3.8-2.4c-1.4-1.3-2.4-2.8-2.6-3.3c-0.3-0.5,0-0.7,0.2-1c0.2-0.2,0.5-0.6,0.7-0.8	c0.2-0.3,0.3-0.5,0.5-0.8c0.2-0.3,0.1-0.6,0-0.8C20.6,19.3,19.7,17,19.3,16z" clipRule="evenodd"></path>
+        </svg>
+      </a>
     </>
   );
 }
