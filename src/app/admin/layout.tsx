@@ -13,6 +13,7 @@ export default function AdminLayout({
   const router = useRouter();
   const pathname = usePathname();
   const [isAdmin, setIsAdmin] = React.useState(false);
+  const [userName, setUserName] = React.useState('');
 
   React.useEffect(() => {
     async function checkAdmin() {
@@ -22,9 +23,10 @@ export default function AdminLayout({
           'Content-Type': 'application/json',
         },
       });
-      const { id } = await res.json();
-      console.log(id);
+      const { id, name } = await res.json();
+      console.log(name);
       setIsAdmin(id === 1);
+      setUserName(name);
     }
     checkAdmin();
   }, []);
@@ -190,7 +192,7 @@ export default function AdminLayout({
             <h1>CMS Bitfast</h1>
             <div className="admin-user-info" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
               Masuk sebagai: <button onClick={() => router.push('/admin/profile')}
-                className="admin-nav-link">Admin Bitfast</button>
+                className="admin-nav-link">{userName}</button>
             </div>
           </div>
 
