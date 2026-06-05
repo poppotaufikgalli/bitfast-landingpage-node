@@ -79,8 +79,8 @@ export async function PUT(request: Request) {
     }
 
     try {
-        const { id } = session;
-        const { name, email, password } = await request.json();
+        // const { id } = session;
+        const { id, name, email, password, confirm_password, type } = await request.json();
 
         const users = await query('SELECT * FROM users WHERE id = ?', [id]) as any[];
         if (users.length === 0) {
@@ -88,14 +88,34 @@ export async function PUT(request: Request) {
                 { success: false, message: 'User tidak ditemukan.' },
                 { status: 401 }
             );
-
         }
 
-        await query('UPDATE users SET email = ? WHERE id = ?', [email, id]) as any[];
+        if (type == 'reset_password') {
+            if (!password) {
+                return NextResponse.json(
+                    { success: false, message: 'Password tidak ditemukan.' },
+                    { status: 401 }
+                );
+            }
+            if (password !== confirm_password) {
+                return NextResponse.json(
+                    { success: false, message: 'Password tidak cocok.' },
+                    { status: 401 }
+                );
+            }
+            const hashedPassword = await bcrypt.hash(password, 10);
+            await query('UPDATE users SET password = ? WHERE id = ?', [hashedPassword, id]) as any[];
+            return NextResponse.json({
+                success: true,
+                message: 'Password berhasil diupdate.',
+            });
+        } else {
+            await query('UPDATE users SET name = ?, email = ? WHERE id = ?', [name, email, id]) as any[];
+        }
 
         return NextResponse.json({
             success: true,
-            message: 'Email berhasil diupdate.',
+            message: 'User berhasil diupdate.',
         });
     } catch (error) {
         console.error("Password update error:", error);

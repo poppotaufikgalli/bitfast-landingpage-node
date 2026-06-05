@@ -9,6 +9,8 @@ interface User {
     name: string
     email: string
     password: string
+    confirm_password: string
+    type: string
 }
 
 const emptyForm = {
@@ -16,6 +18,8 @@ const emptyForm = {
     name: '',
     email: '',
     password: '',
+    confirm_password: '',
+    type: 'data',
 };
 
 export default function UserPage() {
@@ -96,6 +100,34 @@ export default function UserPage() {
         setShowModal(true);
     };
 
+    const resetPassword = (user: User) => {
+        setEditingId(Number(user.id));
+        setForm({
+            id: user.id,
+            name: user.name,
+            email: user.email,
+            password: '',
+            confirm_password: '',
+            type: 'reset_password',
+        });
+        //alert(randomPassword);
+        //setShowModal(true);
+        setShowModal(true);
+    };
+
+    const handleOpenEdit = (user: User) => {
+        setEditingId(Number(user.id));
+        setForm({
+            id: user.id,
+            name: user.name,
+            email: user.email,
+            password: '',
+            confirm_password: '',
+            type: 'data',
+        });
+        setShowModal(true);
+    };
+
     const saveUser = async () => {
         if (!form.name || !form.email) {
             alert('Nama dan email wajib diisi.');
@@ -105,7 +137,8 @@ export default function UserPage() {
         setSaving(true);
         try {
             const payload = { ...form, id: editingId };
-            const method = editingId ? 'PUT' : 'POST';
+            let method = editingId ? 'PUT' : 'POST';
+            method = form.type == 'reset_password' ? 'PUT' : method;
             const res = await fetch('/api/admin/user', {
                 method,
                 headers: {
@@ -115,12 +148,13 @@ export default function UserPage() {
             })
 
             if (res.ok) {
-                //alert('User berhasil diupdate!')
-                //closeModal()
+                const data = await res.json();
+                alert(data.message || 'User berhasil diupdate!')
                 setShowModal(false);
                 fetchUsers()
             } else {
                 const data = await res.json();
+                console.log(data);
                 alert(data.message || 'Gagal menyimpan.');
             }
         } catch (err) {
@@ -163,12 +197,13 @@ export default function UserPage() {
                                 <th>Name</th>
                                 <th>Email</th>
                                 <th>Aksi</th>
+                                <th>Reset Password</th>
                             </tr>
                         </thead>
                         <tbody>
                             {users.length === 0 ? (
                                 <tr>
-                                    <td colSpan={6} className="text-center py-8">
+                                    <td colSpan={5} className="text-center py-8">
                                         Belum ada data user
                                     </td>
                                 </tr>
@@ -180,7 +215,7 @@ export default function UserPage() {
                                         <td>{user.email}</td>
                                         <td className="flex gap-2">
                                             <button
-                                                onClick={() => openModal(user)}
+                                                onClick={() => handleOpenEdit(user)}
                                                 className="btn-admin-edit"
                                             >
                                                 Edit
@@ -190,6 +225,16 @@ export default function UserPage() {
                                                 className="btn-admin-danger"
                                             >
                                                 Hapus
+                                            </button>
+                                        </td>
+                                        <td>
+                                            <button
+                                                onClick={() => {
+                                                    resetPassword(user)
+                                                }}
+                                                className="btn-admin"
+                                            >
+                                                Reset Password
                                             </button>
                                         </td>
                                     </tr>
@@ -208,55 +253,92 @@ export default function UserPage() {
                         style={{ maxWidth: '780px', maxHeight: '92vh' }}
                         onClick={(e) => e.stopPropagation()}
                     >
-                        <h3 style={{ color: 'var(--admin-text-muted)' }}>{editingId ? 'Edit User' : 'Tambah User Baru'}</h3>
+                        <h3 style={{ color: 'var(--admin-text-muted)' }}>{form.type == 'data' ? (editingId ? 'Edit User' : 'Tambah User Baru') : 'Reset Password'}</h3>
                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
-                            <div className="admin-input-group">
-                                <label>
-                                    Nama
-                                </label>
-                                <input
-                                    type="text"
-                                    value={form.name}
-                                    onChange={(e) =>
-                                        setForm({ ...form, name: e.target.value })
-                                    }
-                                    className="admin-input"
-                                />
-                            </div>
+                            {form.type == 'data' && (
+                                <>
+                                    <div className="admin-input-group">
+                                        <label>
+                                            Nama
+                                        </label>
+                                        <input
+                                            type="text"
+                                            value={form.name}
+                                            onChange={(e) =>
+                                                setForm({ ...form, name: e.target.value })
+                                            }
+                                            className="admin-input"
+                                        />
+                                    </div>
 
-                            <div className="admin-input-group">
-                                <label>
-                                    Email
-                                </label>
-                                <input
-                                    type="email"
-                                    value={form.email}
-                                    onChange={(e) =>
-                                        setForm({ ...form, email: e.target.value })
-                                    }
-                                    className="admin-input"
-                                />
-                            </div>
+                                    <div className="admin-input-group">
+                                        <label>
+                                            Email
+                                        </label>
+                                        <input
+                                            type="email"
+                                            value={form.email}
+                                            onChange={(e) =>
+                                                setForm({ ...form, email: e.target.value })
+                                            }
+                                            className="admin-input"
+                                        />
+                                    </div>
+                                    {!editingId && (
+                                        <div className="admin-input-group">
+                                            <label>
+                                                Password
+                                            </label>
+                                            <input
+                                                type="text"
+                                                value={form.password}
+                                                onChange={(e) =>
+                                                    setForm({ ...form, password: e.target.value })
+                                                }
+                                                className="admin-input"
+                                            />
+                                        </div>
+                                    )}
+                                </>
+                            )}
 
-                            <div className="admin-input-group">
-                                <label>
-                                    Password
-                                </label>
-                                <input
-                                    type="text"
-                                    value={form.password}
-                                    onChange={(e) =>
-                                        setForm({ ...form, password: e.target.value })
-                                    }
-                                    className="admin-input"
-                                />
-                            </div>
+                            {form.type == 'reset_password' && (
+                                <>
+                                    <div className="admin-input-group">
+                                        <label>
+                                            Password
+                                        </label>
+                                        <input
+                                            type="password"
+                                            value={form.password}
+                                            onChange={(e) =>
+                                                setForm({ ...form, password: e.target.value })
+                                            }
+                                            className="admin-input"
+                                        />
+                                    </div>
+                                    <div className="admin-input-group">
+                                        <label>
+                                            Ulangi Password
+                                        </label>
+                                        <input
+                                            type="password"
+                                            value={form.confirm_password}
+                                            onChange={(e) =>
+                                                setForm({ ...form, confirm_password: e.target.value })
+                                            }
+                                            className="admin-input"
+                                        />
+                                    </div>
+                                </>
+                            )}
+
                             <div className="admin-modal-actions">
                                 <button className="btn-admin-secondary" onClick={() => setShowModal(false)}>
                                     Batal
                                 </button>
                                 <button className="btn-admin" onClick={saveUser} disabled={saving}>
-                                    {saving ? 'Menyimpan...' : editingId ? 'Simpan Perubahan' : 'Simpan User'}
+                                    {saving ? 'Menyimpan...' : form.type == 'data' ? (editingId ? 'Simpan Perubahan' : 'Tambah User') : 'Reset Password'}
                                 </button>
                             </div>
                         </div>
