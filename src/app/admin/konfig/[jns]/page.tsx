@@ -243,6 +243,7 @@ export default function KonfigsAdminPage() {
                                             <option value="instagram">Instagram</option>
                                             <option value="twitter">Twitter</option>
                                             <option value="youtube">Youtube</option>
+                                            <option value="tiktok">Tiktok</option>
                                         </select>
                                     </div>
                                     <div className="admin-input-group">
